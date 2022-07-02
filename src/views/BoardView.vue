@@ -12,6 +12,7 @@
             class="task"
             v-for="(task, task_index) in column.tasks"
             :key="task_index"
+            @click="openTask(task)"
           >
             <span class="w-full shrink-0 font-bold">{{ task.name }}</span>
             <p class="w-full shrink-0 mt-1 text-sm" v-if="task.description">
@@ -20,6 +21,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="task-bg" v-if="isTaskOpen" @click.self="closeTask">
+      <router-view />
     </div>
   </div>
 </template>
@@ -38,6 +42,17 @@ export default {
   computed: {
     board() {
       return this.boardStore.board
+    },
+    isTaskOpen() {
+      return this.$route.name === 'TaskView'
+    },
+  },
+  methods: {
+    openTask(task) {
+      this.$router.push({ name: 'TaskView', params: { id: task.id } })
+    },
+    closeTask() {
+      this.$router.push({ name: 'BoardView' })
     },
   },
 }
