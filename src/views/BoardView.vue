@@ -1,9 +1,46 @@
 <template>
-  <div class="board"></div>
+  <div class="board">
+    <div class="flex flex-row items-start">
+      <div
+        class="column"
+        v-for="(column, column_index) in board.columns"
+        :key="column_index"
+      >
+        <div class="flex items-center mb-2 font-bold">{{ column.name }}</div>
+        <div class="list-none">
+          <div
+            class="task"
+            v-for="(task, task_index) in column.tasks"
+            :key="task_index"
+          >
+            <span class="w-full shrink-0 font-bold">{{ task.name }}</span>
+            <p class="w-full shrink-0 mt-1 text-sm" v-if="task.description">
+              {{ task.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-export default {}
+import { useBoardStore } from '@/store/BoardStore'
+
+export default {
+  setup() {
+    const boardStore = useBoardStore()
+
+    return {
+      boardStore,
+    }
+  },
+  computed: {
+    board() {
+      return this.boardStore.board
+    },
+  },
+}
 </script>
 
 <style lang="css">
