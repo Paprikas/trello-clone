@@ -39,6 +39,16 @@
           />
         </div>
       </div>
+
+      <div class="column flex">
+        <input
+          type="text"
+          v-model="newColumnName"
+          class="p-2 mr-2 flex-grow bg-transparent"
+          placeholder="+ New Column Name"
+          @keyup.enter="createColumn"
+        />
+      </div>
     </div>
     <div class="task-bg" v-if="isTaskOpen" @click.self="closeTask">
       <router-view />
@@ -57,6 +67,11 @@ export default {
       boardStore,
     }
   },
+  data() {
+    return {
+      newColumnName: '',
+    }
+  },
   computed: {
     board() {
       return this.boardStore.board
@@ -66,6 +81,10 @@ export default {
     },
   },
   methods: {
+    createColumn() {
+      this.boardStore.createColumn(this.newColumnName)
+      this.newColumnName = ''
+    },
     openTask(task) {
       this.$router.push({ name: 'TaskView', params: { id: task.id } })
     },
