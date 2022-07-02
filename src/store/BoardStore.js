@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import defaultBoard from '@/defaultBoard'
+import { v4 as uuidv4 } from 'uuid'
 
 if (!localStorage.getItem('board')) {
   localStorage.setItem('board', JSON.stringify(defaultBoard))
@@ -24,6 +25,19 @@ export const useBoardStore = defineStore('BoardStore', {
           }
         }
       }
+    },
+  },
+  actions: {
+    createTask(tasks, name) {
+      tasks.push({
+        name,
+        id: uuidv4(),
+        description: '',
+      })
+    },
+    updateTask(task, key, value) {
+      task[key] = value
+      // Vue.set(task, key, value)
     },
   },
 })

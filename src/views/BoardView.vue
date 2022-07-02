@@ -19,6 +19,12 @@
               {{ task.description }}
             </p>
           </div>
+          <input
+            type="text"
+            class="block p-2 w-full bg-transparent"
+            placeholder="+ Enter new task"
+            @keyup.enter="createTask($event, column.tasks)"
+          />
         </div>
       </div>
     </div>
@@ -53,6 +59,10 @@ export default {
     },
     closeTask() {
       this.$router.push({ name: 'BoardView' })
+    },
+    createTask(event, tasks) {
+      this.boardStore.createTask(tasks, event.target.value)
+      event.target.value = ''
     },
   },
 }
