@@ -39,5 +39,9 @@ export const useBoardStore = defineStore('BoardStore', {
       task[key] = value
       // Vue.set(task, key, value)
     },
+    moveTask(fromTasks, toTasks, taskIndex) {
+      const taskToMove = fromTasks.splice(taskIndex, 1)[0]
+      toTasks.push(taskToMove)
+    },
   },
 })
