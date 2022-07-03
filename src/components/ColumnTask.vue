@@ -1,22 +1,26 @@
 <template>
-  <div
-    class="task"
-    @click="openTask(task)"
-    draggable="true"
-    @dragstart="pickupTask($event, taskIndex, columnIndex)"
-    @drop.stop="moveTaskOrColumn($event, column.tasks, columnIndex, taskIndex)"
-    @dragover.prevent
-    @dragenter.prevent
-  >
-    <span class="w-full shrink-0 font-bold">{{ task.name }}</span>
-    <p class="w-full shrink-0 mt-1 text-sm" v-if="task.description">
-      {{ task.description }}
-    </p>
-  </div>
+  <AppDrop @drop.self="moveTaskOrColumn">
+    <AppDrag
+      class="task"
+      @click="openTask(task)"
+      :transferData="{
+        type: 'task',
+        fromTaskIndex: taskIndex,
+        fromColumnIndex: columnIndex,
+      }"
+    >
+      <span class="w-full shrink-0 font-bold">{{ task.name }}</span>
+      <p class="w-full shrink-0 mt-1 text-sm" v-if="task.description">
+        {{ task.description }}
+      </p>
+    </AppDrag>
+  </AppDrop>
 </template>
 
 <script>
 import { useBoardStore } from '@/store/BoardStore'
+import AppDrag from '@/components/AppDrag'
+import AppDrop from '@/components/AppDrop'
 import movingTasksAndColumnsMixin from '@/mixins/movingTasksAndColumnsMixin'
 
 export default {
@@ -38,17 +42,13 @@ export default {
       required: true,
     },
   },
+  components: {
+    AppDrag,
+    AppDrop,
+  },
   methods: {
     openTask(task) {
       this.$router.push({ name: 'TaskView', params: { id: task.id } })
-    },
-    pickupTask(event, taskIndex, fromColumnIndex) {
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.dropEffect = 'move'
-
-      event.dataTransfer.setData('from-task-index', taskIndex)
-      event.dataTransfer.setData('from-column-index', fromColumnIndex)
-      event.dataTransfer.setData('type', 'task')
     },
   },
 }

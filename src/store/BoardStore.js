@@ -45,11 +45,11 @@ export const useBoardStore = defineStore('BoardStore', {
       task[key] = value
       // Vue.set(task, key, value)
     },
-    moveTask(fromTasks, toTasks, fromTaskIndex, toTaskIndex) {
+    moveTask({ fromTasks, toTasks, fromTaskIndex, toTaskIndex }) {
       const taskToMove = fromTasks.splice(fromTaskIndex, 1)[0]
       toTasks.splice(toTaskIndex, 0, taskToMove)
     },
-    moveColumn(fromColumnIndex, toColumnIndex) {
+    moveColumn({ fromColumnIndex, toColumnIndex }) {
       const columnList = this.board.columns
       const columnToMove = columnList.splice(fromColumnIndex, 1)[0]
       columnList.splice(toColumnIndex, 0, columnToMove)

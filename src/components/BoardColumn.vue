@@ -1,36 +1,39 @@
 <template>
-  <div
-    class="column"
-    draggable="true"
-    @drop="moveTaskOrColumn($event, column.tasks, columnIndex)"
-    @dragstart.self="pickupColumn($event, columnIndex)"
-    @dragover.prevent
-    @dragenter.prevent
-  >
-    <div class="flex items-center mb-2 font-bold">{{ column.name }}</div>
-    <div class="list-none">
-      <ColumnTask
-        v-for="(task, taskIndex) in column.tasks"
-        :key="taskIndex"
-        :task="task"
-        :taskIndex="taskIndex"
-        :column="column"
-        :columnIndex="columnIndex"
-        :board="board"
-      />
+  <AppDrop @drop.self="moveTaskOrColumn"
+    ><AppDrag
+      class="column"
+      :transferData="{
+        type: 'column',
+        fromColumnIndex: columnIndex,
+      }"
+    >
+      <div class="flex items-center mb-2 font-bold">{{ column.name }}</div>
+      <div class="list-none">
+        <ColumnTask
+          v-for="(task, taskIndex) in column.tasks"
+          :key="taskIndex"
+          :task="task"
+          :taskIndex="taskIndex"
+          :column="column"
+          :columnIndex="columnIndex"
+          :board="board"
+        />
 
-      <input
-        type="text"
-        class="block p-2 w-full bg-transparent"
-        placeholder="+ Enter new task"
-        @keyup.enter="createTask($event, column.tasks)"
-      />
-    </div>
-  </div>
+        <input
+          type="text"
+          class="block p-2 w-full bg-transparent"
+          placeholder="+ Enter new task"
+          @keyup.enter="createTask($event, column.tasks)"
+        />
+      </div>
+    </AppDrag>
+  </AppDrop>
 </template>
 <script>
 import { useBoardStore } from '@/store/BoardStore'
 import ColumnTask from '@/components/ColumnTask'
+import AppDrag from '@/components/AppDrag'
+import AppDrop from '@/components/AppDrop'
 import movingTasksAndColumnsMixin from '@/mixins/movingTasksAndColumnsMixin'
 
 export default {
@@ -44,15 +47,10 @@ export default {
   mixins: [movingTasksAndColumnsMixin],
   components: {
     ColumnTask,
+    AppDrag,
+    AppDrop,
   },
   methods: {
-    pickupColumn(event, columnIndex) {
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.dropEffect = 'move'
-
-      event.dataTransfer.setData('from-column-index', columnIndex)
-      event.dataTransfer.setData('type', 'column')
-    },
     createTask(event, tasks) {
       this.boardStore.createTask(tasks, event.target.value)
       event.target.value = ''
